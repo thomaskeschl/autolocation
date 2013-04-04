@@ -129,9 +129,9 @@ function get_ssid ()
 function get_location ()
 {
     # Grab the location, send any errors from scselect to logger
-    location="$($SCSELECT 2>> >($LOGGER -p $ERRLOG) \
+    location=$($SCSELECT 2>> >($LOGGER -p $ERRLOG) \
 	| grep '^ \* ' \
-	| sed 's/.*(\(.*\))/\1/')"
+	| sed 's/.*(\(.*\))/\1/')
 
     eval "$1=$location"
 }
