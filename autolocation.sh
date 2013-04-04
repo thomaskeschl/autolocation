@@ -35,13 +35,13 @@
 
 # Home
 LOC_NAME[0]="Home"
-LOC_SSID[0]="unnerving"
+LOC_SSID[0]="home_network"
 LOC_EN0IP[0]="10.0.1.41"
 LOC_EN1IP[0]="10.0.1.41"
 
 # Work
-#LOC_NAME[1]="Active"
-#LOC_SSID[1]="WLAN_CORP"
+#LOC_NAME[1]="Work"
+#LOC_SSID[1]="work_network"
 #LOC_EN0IP[1]=
 #LOC_EN1IP[1]=
 #---------------------------------------------------------------------
