@@ -5,13 +5,11 @@
 <dict>
 	<key>Label</key>
 	<string>org.unnerving.AutoLocation</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>/Users/gruiz-ade/bin/autolocation</string>
-	</array>
+	<key>Program</key>
+    <string>/Users/tkeschl/autolocation/autolocation</string>
 	<key>WatchPaths</key>
 	<array>
-		<string>/Library/Preferences/SystemConfiguration/</string>
+		<string>/Library/Preferences/SystemConfiguration</string>
 	</array>
 </dict>
 </plist>
