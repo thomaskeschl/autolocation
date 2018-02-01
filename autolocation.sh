@@ -181,7 +181,7 @@ function set_location ()
     # Add correct zsh config
     if [ -f ~/.${location}rc ] ; then
         ${LOGGER} -p ${INFOLOG} "Adding zsh config section for $location..."
-        sed -i.bak1 '/#Begin'"$location"'Section/r .'"$location"'rc' ~/.zshrc
+        sed -i.bak1 '/#Begin'"$location"'Section/r /Users/tkeschl/.'"$location"'rc' /Users/tkeschl/.zshrc
     fi
 }
 
@@ -216,7 +216,7 @@ if [ ${changed_loc} -eq 1 ]; then
         # Yay, announce our success with pride!
         ${NOTIFY} -e 'display notification "Updated Location: '"$CUR_LOC"'"'
 
-        ${LOGGER} -p ${INFOLOG} "Updated Location: $CUR_LOC;"
+        ${LOGGER} -p ${INFOLOG} "Updated Location: $CUR_LOC"
 
     else
 
