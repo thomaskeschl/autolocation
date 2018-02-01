@@ -170,13 +170,17 @@ function set_location ()
         ln -s ~/.ssh/config.${location} ~/.ssh/config
     fi
 
-    # What's the previous location?
-    previousLocation=$2
+    # Remove all zsh configs
+    i=0;
+    while [ ${i} -lt ${#LOC_NAME[@]} ]; do
+        locName="${LOC_NAME[$i]}";
+        sed -i.bak0 '/#'"$locName"/',/#\/'"$locName"'/d' ~/.zshrc
+        i=$(expr ${i} + 1)
+    done
 
-    # Swap zsh configs
+    # Add correct zsh config
     if [ -f ~/.${location}rc ] ; then
         ${LOGGER} -p ${INFOLOG} "Adding zsh config section for $location..."
-        sed -i.bak0 '/#'"$previousLocation"/',/#\/'"$previousLocation"'/d' ~/.zshrc
         sed -i.bak1 '/#Begin'"$location"'Section/r .'"$location"'rc' ~/.zshrc
     fi
 }
@@ -190,50 +194,12 @@ CUR_LOC=
 get_location CUR_LOC
 ${LOGGER} -p ${INFOLOG} "Current location is: $CUR_LOC"
 
-# Get the associated SSID
-SSID=
-get_ssid SSID
-if [ -n "$SSID" ]; then
-    ${LOGGER} -p ${INFOLOG} "Associated to SSID $SSID"
-else
-    ${LOGGER} -p ${INFOLOG} "Not associated to any SSID"
-fi
-
-# Figure out which location we need to select based on the current
-# network status.
-NEW_LOC=
-REASON=
-i=0;
-while [ ${i} -lt ${#LOC_NAME[@]} ]; do
-    if [ "$SSID" == "${LOC_SSID[$i]}" ]; then
-	NEW_LOC="${LOC_NAME[$i]}"
-	REASON="Matched WiFi"
-    fi
-    i=$(expr ${i} + 1)
-done
-
-# If we didn't find a configured location to match the current network
-# state, fall back to Automatic.
-if [ -z "$NEW_LOC" ]; then
-    NEW_LOC="Automatic"
-    REASON="No known locations detected"
-fi
-
-# At this point we have a decision as to what we want to do.
-${LOGGER} -p ${INFOLOG} "Selected $NEW_LOC as desired location."
-
-# If the location isn't changing, do nothing.
-if [ "$NEW_LOC" == "$CUR_LOC" ]; then
-    ${LOGGER} -p ${INFOLOG} "Location has not changed. Reason: $REASON"
-    exit 0
-fi
-
 # If the location is changing, figure out what we need to change it to
 # and set the new location.
 changed_loc=0
 
-${LOGGER} -p ${INFOLOG} "Setting Network Location $NEW_LOC"
-set_location ${NEW_LOC} ${CUR_LOC}
+${LOGGER} -p ${INFOLOG} "Setting Network Location $CUR_LOC"
+set_location ${CUR_LOC}
 changed_loc=1
 
 # Check the current location again to see if it's changed
@@ -245,19 +211,19 @@ ${LOGGER} -p ${INFOLOG} "Current location is now: $CUR_LOC"
 if [ ${changed_loc} -eq 1 ]; then
 
     # See if we really did change...
-    if [ "$CUR_LOC" == "$NEW_LOC" ]; then
+    if [ "$CUR_LOC" == "$CUR_LOC" ]; then
 
         # Yay, announce our success with pride!
-        ${NOTIFY} -e 'display notification "Updated Location: '"$NEW_LOC"' Reason: '"$REASON"' SSID: '"$SSID"'"'
+        ${NOTIFY} -e 'display notification "Updated Location: '"$CUR_LOC"'"'
 
-        ${LOGGER} -p ${INFOLOG} "Updated Location: $NEW_LOC; REASON: $REASON; SSID: $SSID"
+        ${LOGGER} -p ${INFOLOG} "Updated Location: $CUR_LOC;"
 
     else
 
         # Boo, we completely failed, and need to tell someone.
-        ${NOTIFY} -e 'display notification "FAILED! Unable to update Location to '"$NEW_LOC"'! Reason: '"$REASON"' SSID: '"$SSID"
+        ${NOTIFY} -e 'display notification "FAILED! Unable to update Location to '"$CUR_LOC"'!"'
 
-        ${LOGGER} -p ${ERRLOG} "FAILED! Unable to update Location to $NEW_LOC!"
+        ${LOGGER} -p ${ERRLOG} "FAILED! Unable to update Location to $CUR_LOC!"
     fi
 
 fi
